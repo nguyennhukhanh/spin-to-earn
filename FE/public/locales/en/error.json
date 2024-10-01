@@ -1,0 +1,6 @@
+{
+  "signIn": {
+    "invalidEmailTry5Times": "Invalid email. You can try 5 times.",
+    "incorrectPasswordTry5Times": "Incorrect password. You can try 5 times."
+  }
+}

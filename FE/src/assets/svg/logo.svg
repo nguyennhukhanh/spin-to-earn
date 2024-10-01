@@ -1,0 +1,21 @@
+<svg width="100" height="72" viewBox="0 0 100 72" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path
+            d="M55.0687 28.1784L66.7623 44.5151L97.8672 1.0376H74.489L55.0664 28.1784H55.0687Z"
+            fill="url(#logo-small)"
+          />
+          <path d="M42.7986 28.1784L31.1095 44.5151L0 1.0376H23.3782L42.8008 28.1784H42.7986Z" fill="black" />
+          <path d="M60.5661 53.1201L48.8927 36.8037L37.2148 53.1201L48.8927 69.441L60.5661 53.1201Z" fill="black" />
+          <defs>
+            <linearGradient
+              id="logo-small"
+              x1="66.436"
+              y1="-10.2945"
+              x2="81.9357"
+              y2="28.3115"
+              gradientUnits="userSpaceOnUse"
+            >
+              <stop stop-color="#1A2980" />
+              <stop offset="1" stop-color="#25C1C7" />
+            </linearGradient>
+          </defs>
+        </svg>
