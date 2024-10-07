@@ -115,7 +115,7 @@ const MultipleAutoComplete: FCC<Props> = ({
           {selected.map((x, i) => (
             <Chip key={i}>
               {x}
-              <Icons.X
+              <Icons.x
                 onClick={() => removeValue(x)}
                 className="ml-2 h-3 w-3 cursor-pointer text-main-30 hover:text-main"
               />
