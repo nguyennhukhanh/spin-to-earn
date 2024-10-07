@@ -5,8 +5,8 @@ import { DialogConnectWallet } from '@/components/authentication/DialogConnectWa
 import { cn } from '@/lib/utils';
 import { type FCC, ROUTE } from '@/types';
 
+import Header from './components/Header';
 import Footer from './Footer';
-import Header from './Header';
 
 interface Props {
   className?: string;

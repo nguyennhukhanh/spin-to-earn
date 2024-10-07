@@ -30,12 +30,15 @@ interface TooltipProps {
   label: React.ReactNode;
   asChild?: boolean;
   delayDuration?: number;
+  className?: string;
 }
 
-const Tooltip = ({ children, label, asChild = false, delayDuration = 0, ...props }: TooltipProps) => (
+const Tooltip = ({ children, label, asChild = false, delayDuration = 0, className, ...props }: TooltipProps) => (
   <TooltipProvider>
     <TooltipRoot delayDuration={delayDuration} {...props}>
-      <TooltipTrigger asChild={asChild}>{children}</TooltipTrigger>
+      <TooltipTrigger className={className} asChild={asChild}>
+        {children}
+      </TooltipTrigger>
       <TooltipContent>{label}</TooltipContent>
     </TooltipRoot>
   </TooltipProvider>

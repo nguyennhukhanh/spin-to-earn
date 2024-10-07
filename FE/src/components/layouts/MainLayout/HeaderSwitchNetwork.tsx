@@ -39,7 +39,9 @@ const HeaderSwitchNetwork = () => {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <button
-          className={'flex items-center gap-2 transition-all [&[data-state=open]>svg:last-child]:rotate-180'}
+          className={
+            'flex h-full items-center gap-2 rounded-sm border border-white p-0.5 transition-all [&[data-state=open]>svg:last-child]:rotate-180'
+          }
           aria-label="Select network"
         >
           {isPending && <TriggerLoading />}
@@ -91,16 +93,16 @@ type TriggerNetworkProps = {
 const TriggerNetwork = ({ icon: Icon }: TriggerNetworkProps) => (
   <>
     <Icon className="aspect-square w-7" />
-    <Icons.chevronDown className="h-4 w-4 transition-all" />
+    <Icons.chevronDown className="h-4 w-4 transition-all" color="#fff" />
   </>
 );
 
 const TriggerLoading = () => (
   <>
-    <Spinner className="aspect-square w-7" />
+    <Spinner className="aspect-square w-7" color="#fff" />
 
-    <p className="text-sm font-medium">Requesting</p>
+    <p className="text-sm font-medium text-white">Requesting</p>
 
-    <Icons.chevronDown className="h-4 w-4 transition-all" />
+    <Icons.chevronDown className="h-4 w-4 transition-all" color="#fff" />
   </>
 );

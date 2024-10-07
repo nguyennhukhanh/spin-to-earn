@@ -24,11 +24,6 @@ const defaultNetworkChain: ChainNetwork[] = [
     chainId: 56,
     icon: Icons.bnbSmartChain,
   },
-  {
-    name: 'Ethereum',
-    chainId: 1,
-    icon: Icons.ethereum,
-  },
 ];
 
 export const networkChain = !isUseTestnet
@@ -38,10 +33,5 @@ export const networkChain = !isUseTestnet
         name: 'BNB Smart Chain Testnet',
         chainId: 97,
         icon: Icons.bnbSmartChain,
-      },
-      {
-        name: 'Sepolia (Testnet)',
-        chainId: 11155111,
-        icon: Icons.ethereum,
       },
     ].concat(defaultNetworkChain);

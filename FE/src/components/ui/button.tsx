@@ -7,7 +7,7 @@ import { cn } from '@/lib/utils';
 import { Spinner } from './spinner';
 
 const buttonVariants = cva(
-  'inline-flex items-center active:scale-90 justify-center rounded-sm text-sm font-medium ring-offset-background transition-transform focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50',
+  'inline-flex items-center active:scale-90 justify-center rounded-sm text-sm font-medium ring-offset-background transition-all ease-in-out duration-300 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50',
   {
     variants: {
       variant: {

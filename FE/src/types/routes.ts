@@ -1,6 +1,8 @@
 export const ROUTE = {
   HOME: '/',
-  ME: '/me',
+  LEADERBOARD: '/leaderboard',
+  CONTACT: '/contact',
+  CLAIM: '/claim',
 } as const;
 
 export type ROUTE_KEY = keyof typeof ROUTE;

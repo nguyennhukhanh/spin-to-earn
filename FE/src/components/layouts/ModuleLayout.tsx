@@ -10,7 +10,7 @@ const ModuleLayout: FCC = ({ children }) => {
     <>
       {children}
       <TailwindIndicator />
-      <NextNProgress color="hsl(225,98%,35%)" startPosition={0.3} stopDelayMs={200} height={3} showOnShallow={false} />
+      <NextNProgress color="#F2E205" startPosition={0.3} stopDelayMs={200} height={3} showOnShallow={false} />
     </>
   );
 };

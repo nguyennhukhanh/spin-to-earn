@@ -10,6 +10,9 @@ import {
   Loader2,
   LogOut,
   Settings2,
+  User,
+  Users,
+  X,
 } from 'lucide-react';
 
 import acceptCoin from '@/assets/svg/accept-coin.svg';
@@ -105,7 +108,6 @@ import walletConnect from '@/assets/svg/wallet-connect.svg';
 import wallet2 from '@/assets/svg/wallet2.svg';
 import wallet3 from '@/assets/svg/wallet3.svg';
 import wallet4 from '@/assets/svg/wallet4.svg';
-import X from '@/assets/svg/X.svg';
 import XIcon from '@/assets/svg/x-icon.svg';
 import xSocial from '@/assets/svg/x-social.svg';
 import X2 from '@/assets/svg/X2.svg';
@@ -132,7 +134,6 @@ const IconList = {
   ethereum,
   check,
   eyeHidden,
-  X,
   eye,
   camera: Camera,
   search,
@@ -223,6 +224,9 @@ const IconList = {
   usdvCoin,
   pancakeIcon,
   paymentDialogBg: PaymentDialogBg,
+  users: Users,
+  user: User,
+  x: X,
 };
 
 export const Icons = IconList as Record<keyof typeof IconList, Icon>;

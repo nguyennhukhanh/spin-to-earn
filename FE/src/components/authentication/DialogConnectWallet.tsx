@@ -15,9 +15,9 @@ const DialogConnectWallet = ({ requireLogin }: { requireLogin?: boolean }) => {
   const { isConnected } = useAccount();
 
   const handleCancelConnect = useCallback(() => {
-    if (requireLogin) return;
+    // if (requireLogin) return;
     setTargetInView('');
-  }, [requireLogin, setTargetInView]);
+  }, [setTargetInView]);
 
   return (
     <Dialog open={targetInView === 'connectWallet' && !isConnected} onOpenChange={handleCancelConnect}>
