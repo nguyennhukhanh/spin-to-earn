@@ -1,5 +1,6 @@
 import { Icons } from '@/assets/icons';
 import { type ChainNetwork } from '@/types';
+import { type Address } from '@/types/common.type';
 
 const isProduction = process.env.NODE_ENV === 'production';
 const signatureMessage =
@@ -12,6 +13,8 @@ export const env = {
   API_URL: process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3001',
   USE_TESTNET: process.env.NEXT_PUBLIC_USE_TESTNET ?? 'false',
   BSC_SCAN_URL: process.env.NEXT_PUBLIC_BSC_SCAN_URL ?? 'https://testnet.bscscan.com',
+  SPIN_CONTRACT: (process.env.NEXT_PUBLIC_SPIN_CONTRACT ?? '0x') as Address,
+  TOKEN_CONTRACT: (process.env.NEXT_PUBLIC_TOKEN_CONTRACT ?? '0x') as Address,
   signatureMessage,
 };
 
