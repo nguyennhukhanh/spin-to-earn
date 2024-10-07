@@ -1,16 +1,24 @@
-# Spin-to-Earn
+# fire-bomber-token
 
 ## Introduction
 
-Spin-to-Earn is a blockchain project that uses Hardhat for compiling, deploying, and testing smart contracts. This project allows users to participate in earning activities through spinning.
+```plaintext
+Main functions of ERC-20:
+transfer: Transfer tokens from sender to recipient.
+approve: Allow another address to spend a certain amount of tokens from your account.
+transferFrom: Transfer tokens from another (approved) address to the recipient.
+mint: Create new tokens.
+burn: Burn tokens to reduce total supply.
+pause: Pause all transactions.
+unpause: Reactivate transactions.```
 
 ## Installation
 
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/nguyennhukhanh/spin-to-earn
-   cd spin-to-earn
+   git clone https://github.com/nguyennhukhanh/fire-bomber-token
+   cd fire-bomber-token
    ```
 
 2. Install dependencies:

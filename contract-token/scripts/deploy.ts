@@ -1,14 +1,14 @@
-import { ethers } from "hardhat";
+import { ethers } from 'hardhat';
 
 async function main() {
   const [deployer] = await ethers.getSigners();
 
-  console.log("Deploying contracts with the account:", deployer.address);
+  console.log('Deploying contracts with the account:', deployer.address);
 
-  const SpinToEarn = await ethers.getContractFactory("SpinToEarn");
-  const election = await SpinToEarn.deploy();
+  const FireBomberToken = await ethers.getContractFactory('FireBomberToken');
+  const election = await FireBomberToken.deploy();
 
-  console.log("SpinToEarn deployed to:", election.target);
+  console.log('FireBomberToken deployed to:', election.target);
 }
 
 main().catch((error) => {
