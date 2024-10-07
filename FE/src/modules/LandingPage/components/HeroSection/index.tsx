@@ -30,7 +30,7 @@ const generatePrizes = () => {
   prizes.push('x1.25', 'x1.25', 'x1.25');
   prizes.push('x0.75', 'x0.75', 'x0.75');
   prizes.push('x0.5', 'x0.5');
-  prizes.push('x0.25', 'x0.25');
+  prizes.push('x0.25');
 
   for (let i = prizes.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
@@ -56,9 +56,9 @@ const HeroSection = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-black py-20">
-      <HStack pos="center" spacing={16} className="container h-full min-h-screen">
-        <div className="h-full min-h-screen flex-1 space-y-5">
+    <div className="min-h-[calc(100vh-80px)] bg-black py-20">
+      <HStack pos="center" spacing={16} className="container h-full">
+        <div className="h-full flex-1 space-y-5">
           <p className="text-xl font-medium text-white lg:text-2xl">Spin to Earn</p>
           <p className="text-4xl font-bold text-white lg:text-5xl">Spin the Wheel, Earn Rewards</p>
           <p className="text-sm text-white/50">
@@ -70,7 +70,7 @@ const HeroSection = () => {
             <p className="text-sm text-white">{prettyNumber(1000)}+ Players</p>
           </HStack>
         </div>
-        <div className="h-full min-h-screen flex-1">
+        <div className="h-full flex-1">
           <HStack pos="center" className="w-full">
             <div className="relative aspect-square w-full lg:w-2/3">
               <Image src="/images/border-wheel.png" alt="border wheel" fill priority unoptimized className="z-10" />

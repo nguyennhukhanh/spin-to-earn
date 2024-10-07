@@ -22,11 +22,11 @@ const Header = () => {
 
   return (
     <motion.header
-      viewport={{ once: true }}
-      variants={{
-        visible: { y: 0 },
-        hidden: { y: -20 },
-      }}
+      // viewport={{ once: true }}
+      // variants={{
+      //   visible: { y: 0 },
+      //   hidden: { y: -20 },
+      // }}
       whileInView="visible"
       initial="hidden"
       transition={{ duration: 0.3 }}

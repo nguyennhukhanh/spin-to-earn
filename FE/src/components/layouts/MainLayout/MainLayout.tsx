@@ -2,7 +2,6 @@ import { useRouter } from 'next/router';
 import React from 'react';
 
 import { DialogConnectWallet } from '@/components/authentication/DialogConnectWallet';
-import { cn } from '@/lib/utils';
 import { type FCC, ROUTE } from '@/types';
 
 import Header from './components/Header';
@@ -20,7 +19,7 @@ const MainLayout: FCC<Props> = ({ children, className }) => {
     <div className="overflow-clip">
       <Header />
 
-      <main className={cn('min-h-screen', className)}>{children}</main>
+      <main className={className}>{children}</main>
 
       <Footer />
 

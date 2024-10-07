@@ -7,11 +7,14 @@ import {
   ChevronUp,
   Copy,
   Dot,
+  FerrisWheel,
+  Gift,
   Loader2,
   LogOut,
   Settings2,
   User,
   Users,
+  Wallet,
   X,
 } from 'lucide-react';
 
@@ -103,7 +106,6 @@ import up from '@/assets/svg/up.svg';
 import upload from '@/assets/svg/upload.svg';
 import usdvCoin from '@/assets/svg/usdv_coin.svg';
 import visa from '@/assets/svg/visa.svg';
-import wallet from '@/assets/svg/wallet.svg';
 import walletConnect from '@/assets/svg/wallet-connect.svg';
 import wallet2 from '@/assets/svg/wallet2.svg';
 import wallet3 from '@/assets/svg/wallet3.svg';
@@ -199,7 +201,7 @@ const IconList = {
   mexc,
   mexcV2,
   pancakeswap,
-  wallet,
+  wallet: Wallet,
   alignJustify,
   wallet2,
   infoCircle,
@@ -227,6 +229,8 @@ const IconList = {
   users: Users,
   user: User,
   x: X,
+  wheel: FerrisWheel,
+  gift: Gift,
 };
 
 export const Icons = IconList as Record<keyof typeof IconList, Icon>;

@@ -11,7 +11,7 @@ import { HStack, Show } from '../ui/Utilities';
 
 const ConnectWalletButton = () => {
   const { isConnected, address } = useAccount();
-  const { disconnectAsync } = useDisconnect();
+  const { disconnect } = useDisconnect();
   const setTargetInView = useIntersectionStore.use.setTargetInView();
 
   return (
@@ -34,7 +34,7 @@ const ConnectWalletButton = () => {
 
             <Tooltip label="Disconnect" className="!h-5">
               <button className="h-fit">
-                <Icons.x color="#fff" onClick={() => disconnectAsync()} size={20} />
+                <Icons.x color="#fff" onClick={() => disconnect()} size={20} />
               </button>
             </Tooltip>
           </HStack>
