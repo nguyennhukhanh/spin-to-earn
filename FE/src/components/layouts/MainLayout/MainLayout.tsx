@@ -2,7 +2,8 @@ import { useRouter } from 'next/router';
 import React from 'react';
 
 import { DialogConnectWallet } from '@/components/authentication/DialogConnectWallet';
-import { type FCC, ROUTE } from '@/types';
+import { requireLoginPathname } from '@/lib/const';
+import { type FCC } from '@/types';
 
 import Header from './components/Header';
 import Footer from './Footer';
@@ -23,7 +24,7 @@ const MainLayout: FCC<Props> = ({ children, className }) => {
 
       <Footer />
 
-      <DialogConnectWallet requireLogin={pathname === ROUTE.HOME} />
+      <DialogConnectWallet requireLogin={requireLoginPathname?.includes(pathname)} />
     </div>
   );
 };

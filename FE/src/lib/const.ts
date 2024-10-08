@@ -1,5 +1,5 @@
 import { Icons } from '@/assets/icons';
-import { type ChainNetwork } from '@/types';
+import { type ChainNetwork, ROUTE } from '@/types';
 import { type Address } from '@/types/common.type';
 
 const isProduction = process.env.NODE_ENV === 'production';
@@ -21,6 +21,8 @@ export const env = {
 
 export const isServer = typeof window === 'undefined';
 export const isUseTestnet = env.USE_TESTNET === 'true';
+
+export const requireLoginPathname: string[] = [ROUTE.CLAIM];
 
 const defaultNetworkChain: ChainNetwork[] = [
   {
