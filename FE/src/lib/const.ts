@@ -15,6 +15,7 @@ export const env = {
   BSC_SCAN_URL: process.env.NEXT_PUBLIC_BSC_SCAN_URL ?? 'https://testnet.bscscan.com',
   SPIN_CONTRACT: (process.env.NEXT_PUBLIC_SPIN_CONTRACT ?? '0x') as Address,
   TOKEN_CONTRACT: (process.env.NEXT_PUBLIC_TOKEN_CONTRACT ?? '0x') as Address,
+  NUMBER_PRIZE: process.env.NEXT_PUBLIC_NUMBER_PRIZE ?? '15',
   signatureMessage,
 };
 
