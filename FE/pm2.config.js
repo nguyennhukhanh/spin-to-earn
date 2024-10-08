@@ -1,7 +1,7 @@
 module.exports = {
   apps: [
     {
-      name: 'vaporfund-frontend',
+      name: 'spin-to-earn',
       script: 'yarn start-prod',
     },
   ],

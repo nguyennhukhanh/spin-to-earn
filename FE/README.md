@@ -1,6 +1,6 @@
 ## Description
 
-VaporFund frontend repository.
+Spin to Earn repository.
 
 ## Environment requirement
 
