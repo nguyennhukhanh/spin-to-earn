@@ -1,0 +1,10 @@
+.husky
+.vscode
+.git
+/dist
+/documentation
+/logs
+/node_modules
+/public
+*.md
+.example.env
