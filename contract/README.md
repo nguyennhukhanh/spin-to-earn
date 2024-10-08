@@ -2,15 +2,7 @@
 
 ## Introduction
 
-```plaintext
-Main functions of ERC-20:
-transfer: Transfer tokens from sender to recipient.
-approve: Allow another address to spend a certain amount of tokens from your account.
-transferFrom: Transfer tokens from another (approved) address to the recipient.
-mint: Create new tokens.
-burn: Burn tokens to reduce total supply.
-pause: Pause all transactions.
-unpause: Reactivate transactions.```
+Spin-to-Earn is a blockchain project that uses Hardhat for compiling, deploying, and testing smart contracts. This project allows users to participate in earning activities through spinning.
 
 ## Installation
 
