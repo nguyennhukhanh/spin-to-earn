@@ -1,5 +1,12 @@
-import { Column, Entity, Index, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  Index,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
+import { Point } from '.';
 import { BaseTime } from './base/time.entity';
 
 @Index(['walletAddress'], { unique: true })
@@ -19,4 +26,7 @@ export class User extends BaseTime {
 
   @Column({ type: 'boolean', default: true })
   isActive: boolean;
+
+  @OneToMany(() => Point, (point) => point.user)
+  points: Point[];
 }

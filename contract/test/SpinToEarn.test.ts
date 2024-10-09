@@ -1,96 +1,93 @@
 import { expect } from "chai";
 import { ethers } from "hardhat";
 import { loadFixture } from "@nomicfoundation/hardhat-toolbox/network-helpers";
-import { parseEther } from "ethers";
 
-describe("SpinToEarn", function () {
-  async function deployContractsFixture() {
+describe("SpinToEarn Contract", function () {
+  async function deploySpinToEarnFixture() {
     const [owner, user1, user2] = await ethers.getSigners();
 
-    // Deploy FireBomberToken contract
-    const FireBomberToken = await ethers.getContractFactory("FireBomberToken");
-    const token = await FireBomberToken.deploy();
-
-    // Deploy SpinToEarn contract with FireBomberToken address
     const SpinToEarn = await ethers.getContractFactory("SpinToEarn");
-    const spinToEarn = await SpinToEarn.deploy(token.getAddress());
+    const spinToEarn = await SpinToEarn.deploy();
+    // await spinToEarn.deployed();
 
-    // Mint some tokens to user1 and user2 for testing
-    await token.mint(user1.address, parseEther("100"));
-    await token.mint(user2.address, parseEther("100"));
-
-    return { token, spinToEarn, owner, user1, user2 };
+    return { spinToEarn, owner, user1, user2 };
   }
 
-  it("Should allow users to buy tickets", async function () {
-    const { token, spinToEarn, user1 } = await loadFixture(deployContractsFixture);
-
-    const ticketPrice = parseEther("1");
-    await token.connect(user1).approve(spinToEarn.getAddress(), ticketPrice);
-
-    await expect(spinToEarn.connect(user1).buyTickets(ticketPrice))
-      .to.emit(spinToEarn, "TicketsPurchased")
-      .withArgs(user1.address, 1); // 1 ticket for 1 FBBT
-
-    const userTickets = await spinToEarn.users(user1.address);
-    expect(userTickets.tickets).to.equal(1);
+  it("Should set the correct owner", async function () {
+    const { spinToEarn, owner } = await loadFixture(deploySpinToEarnFixture);
+    expect(await spinToEarn.owner()).to.equal(owner.address);
   });
 
-  it("Should allow owner to set points for users", async function () {
-    const { spinToEarn, owner, user1, user2 } = await loadFixture(deployContractsFixture);
+  it("Should allow users to buy tickets with BNB", async function () {
+    const { spinToEarn, user1 } = await loadFixture(deploySpinToEarnFixture);
+    const ticketPrice = ethers.parseEther("0.01");
 
-    const userAddresses = [user1.address, user2.address];
-    const points = [150, 200];
+    // User1 buys 1 ticket by sending 0.01 BNB
+    await spinToEarn.connect(user1).buyTickets({ value: ticketPrice });
 
-    await expect(spinToEarn.connect(owner).setPoints(userAddresses, points))
-      .to.emit(spinToEarn, "PointsAssigned")
-      .withArgs(user1.address, 150);
-
-    const user1Data = await spinToEarn.users(user1.address);
-    const user2Data = await spinToEarn.users(user2.address);
-    expect(user1Data.points).to.equal(150);
-    expect(user2Data.points).to.equal(200);
+    const userTickets = await spinToEarn.ticketsBalance(user1.address);
+    expect(userTickets).to.equal(1);
   });
 
-  it("Should allow users to withdraw rewards when they have enough points", async function () {
-    const { token, spinToEarn, user1, owner } = await loadFixture(deployContractsFixture);
+  it("Should allow only owner to set points for users", async function () {
+    const { spinToEarn, owner, user1, user2 } = await loadFixture(
+      deploySpinToEarnFixture
+    );
 
-    // Set user points over the required minimum (e.g., 150 points)
-    await spinToEarn.connect(owner).setPoints([user1.address], [150]);
+    // Set points for user1 and user2
+    await spinToEarn
+      .connect(owner)
+      .setPoints([user1.address, user2.address], [100, 200]);
 
-    const user1BalanceBefore = await token.balanceOf(user1.address);
-    
-    await expect(spinToEarn.connect(user1).withdrawFunds())
-      .to.emit(spinToEarn, "RewardClaimed")
-      .withArgs(user1.address, 150, parseEther("1.5")); // 150 points -> 1.5 FBBT reward
-
-    const user1BalanceAfter = await token.balanceOf(user1.address);
-    console.log({user1BalanceAfter});
-    expect(user1BalanceAfter - (user1BalanceBefore)).to.equal(parseEther("1.5"));
-
-    const user1Data = await spinToEarn.users(user1.address);
-    expect(user1Data.points).to.equal(0); // Points should reset to 0 after withdrawal
+    expect(await spinToEarn.pointsBalance(user1.address)).to.equal(100);
+    expect(await spinToEarn.pointsBalance(user2.address)).to.equal(200);
   });
 
-  it("Should fail to withdraw rewards if points are less than 100", async function () {
-    const { spinToEarn, user1, owner } = await loadFixture(deployContractsFixture);
+  it("Should not allow non-owner to set points", async function () {
+    const { spinToEarn, user1, user2 } = await loadFixture(
+      deploySpinToEarnFixture
+    );
 
-    // Set user points less than 100 (e.g., 50 points)
+    await expect(
+      spinToEarn.connect(user1).setPoints([user2.address], [100])
+    ).to.be.revertedWith("Only owner can perform this action");
+  });
+
+  it("Should allow users to withdraw rewards based on points", async function () {
+    const { spinToEarn, owner, user1 } = await loadFixture(
+      deploySpinToEarnFixture
+    );
+
+    // Owner assigns 1000 points to user1
+    await spinToEarn.connect(owner).setPoints([user1.address], [1000]);
+
+    // User1 withdraws rewards
+    const user1BalanceBefore = await ethers.provider.getBalance(user1.address);
+    const tx = await spinToEarn.connect(user1).withdrawFunds();
+    const receipt = await tx.wait(); // Get gas fee information
+
+    const user1BalanceAfter = await ethers.provider.getBalance(user1.address);
+
+    const gasUsed = receipt.gasUsed.mul(tx.gasPrice); // Calculate gas fees
+
+    expect(
+      user1BalanceAfter.add(gasUsed).sub(user1BalanceBefore)
+    ).to.be.closeTo(
+      ethers.parseEther("1"), // 1000 points = 1 BNB
+      ethers.parseEther("0.01") // Small error range due to gas fees
+    );
+  });
+
+  it("Should not allow users with less than 100 points to withdraw", async function () {
+    const { spinToEarn, owner, user1 } = await loadFixture(
+      deploySpinToEarnFixture
+    );
+
+    // Owner assigns 50 points to user1 (less than 100)
     await spinToEarn.connect(owner).setPoints([user1.address], [50]);
 
     await expect(spinToEarn.connect(user1).withdrawFunds()).to.be.revertedWith(
       "You need at least 100 points to withdraw rewards"
     );
-  });
-
-  it("Should not allow non-owners to set points", async function () {
-    const { spinToEarn, user1 } = await loadFixture(deployContractsFixture);
-
-    const userAddresses = [user1.address];
-    const points = [150];
-
-    await expect(
-      spinToEarn.connect(user1).setPoints(userAddresses, points)
-    ).to.be.revertedWith("Only owner can perform this action");
   });
 });

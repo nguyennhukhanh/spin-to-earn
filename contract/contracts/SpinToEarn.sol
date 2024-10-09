@@ -1,87 +1,81 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.27;
 
-interface IERC20 {
-    function transferFrom(
-        address sender,
-        address recipient,
-        uint256 amount
-    ) external returns (bool);
-
-    function transfer(
-        address recipient,
-        uint256 amount
-    ) external returns (bool);
-
-    function balanceOf(address account) external view returns (uint256);
-
-    function decimals() external view returns (uint8);
-}
-
 contract SpinToEarn {
-    uint256 public ticketPrice = 1 * 10 ** 18; // 1 FireBomberToken
-    struct User {
-        uint256 points;
-        uint256 tickets;
-    }
-    mapping(address => User) public users;
-    address public owner;
-    IERC20 public token;
+    uint256 public ticketPrice = 0.000001 ether; // 0.000001 BNB per ticket
+    mapping(address => uint256) public pointsBalance; // Track user points
+    mapping(address => uint256) public ticketsBalance; // Track user tickets
+    address public owner; // Contract owner/operator
 
+    // Event to log ticket purchase
     event TicketsPurchased(address indexed user, uint256 amount);
+    // Event to log reward claim
     event RewardClaimed(address indexed user, uint256 points, uint256 reward);
+    // Event to log points assignment by operator
     event PointsAssigned(address indexed user, uint256 points);
 
+    // Modifier to restrict access to the owner (operator)
     modifier onlyOwner() {
         require(msg.sender == owner, "Only owner can perform this action");
         _;
     }
 
-    constructor(address _token) {
+    // Constructor to set the contract owner/operator
+    constructor() {
         owner = msg.sender;
-        token = IERC20(_token); // Set FireBomberToken as the token used
     }
 
+    // Assign points to user wallets (called by operator)
     function setPoints(
-        address[] calldata userAddresses,
+        address[] calldata users,
         uint256[] calldata points
     ) external onlyOwner {
         require(
-            userAddresses.length == points.length,
+            users.length == points.length,
             "Users and points array must have the same length"
         );
-        for (uint256 i = 0; i < userAddresses.length; i++) {
-            users[userAddresses[i]].points = points[i];
-            emit PointsAssigned(userAddresses[i], points[i]);
+        for (uint256 i = 0; i < users.length; i++) {
+            pointsBalance[users[i]] = points[i];
+            emit PointsAssigned(users[i], points[i]);
         }
     }
 
-    function buyTickets(uint256 amount) external {
-        require(
-            amount >= ticketPrice,
-            "Insufficient token amount to buy tickets"
-        );
-        token.transferFrom(msg.sender, address(this), amount); // Transfer FireBomberToken from user
-        uint256 tickets = amount / ticketPrice;
-        users[msg.sender].tickets += tickets;
+    // Buy tickets by sending BNB
+    function buyTickets() external payable {
+        require(msg.value >= ticketPrice, "Insufficient BNB to buy tickets");
+
+        // Calculate number of tickets based on BNB sent
+        uint256 tickets = msg.value / ticketPrice;
+        ticketsBalance[msg.sender] += tickets;
+
         emit TicketsPurchased(msg.sender, tickets);
     }
 
+    // Withdraw rewards based on points
     function withdrawFunds() external {
-        uint256 points = users[msg.sender].points;
+        uint256 points = pointsBalance[msg.sender];
         require(
             points >= 100,
             "You need at least 100 points to withdraw rewards"
         );
-        uint8 decimals = token.decimals();
-        uint256 reward = (points * (10 ** decimals)) / 100; // 1 point = 0.01 FireBomberToken
+
+        uint256 reward = points * 0.000000001 ether; // 0.000000001 BNB per point
         require(reward > 0, "Reward is too small");
-        users[msg.sender].points = 0;
-        token.transfer(msg.sender, reward); // Transfer FireBomberToken as reward
+
+        // Deduct points after withdrawal
+        pointsBalance[msg.sender] = 0;
+
+        // Transfer BNB as reward to the user
+        payable(msg.sender).transfer(reward);
+
         emit RewardClaimed(msg.sender, points, reward);
     }
 
+    // Get user points balance
     function getPoints() external view returns (uint256) {
-        return users[msg.sender].points;
+        return pointsBalance[msg.sender];
     }
+
+    // Fallback function to accept BNB directly
+    receive() external payable {}
 }

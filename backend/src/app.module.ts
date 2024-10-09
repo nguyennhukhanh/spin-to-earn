@@ -9,7 +9,10 @@ import { TransformInterceptor } from './common/interceptors/transform.intercepto
 import { load } from './configs';
 import { AuthModule } from './modules/auth/auth.module';
 import { HealthController } from './modules/default/health.controller';
+import { PointModule } from './modules/point/point.module';
+import { RewardModule } from './modules/reward/reward.module';
 import { SessionModule } from './modules/session/session.module';
+import { TicketModule } from './modules/ticket/ticket.module';
 import { UserModule } from './modules/user/user.module';
 import { OrmModule } from './orm.module';
 
@@ -27,6 +30,9 @@ import { OrmModule } from './orm.module';
     AuthModule,
     UserModule,
     SessionModule,
+    RewardModule,
+    TicketModule,
+    PointModule,
   ],
   controllers: [HealthController],
   providers: [
