@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 
 import { load } from './configs';
+import { WorkerModule } from './modules/worker/worker.module';
 import { OrmModule } from './orm.module';
 
 @Module({
@@ -12,6 +13,7 @@ import { OrmModule } from './orm.module';
       load,
     }),
     OrmModule,
+    WorkerModule,
   ],
 })
 export class AppWorkerModule {}

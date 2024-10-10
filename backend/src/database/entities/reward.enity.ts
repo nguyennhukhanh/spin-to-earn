@@ -7,11 +7,11 @@ export class Reward extends BaseTime {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ type: 'int', nullable: false })
+  @Column({ type: 'bigint', nullable: false })
   points: number;
 
-  @Column({ type: 'int', nullable: false })
-  reward: number;
+  @Column({ length: 50, nullable: false })
+  reward: string;
 
   @Column({ length: 100, nullable: false })
   fromAddress: string;

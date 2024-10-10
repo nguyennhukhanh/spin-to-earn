@@ -32,6 +32,18 @@ export class MainConfig {
   @IsNumber()
   apiKeyLifetime?: number;
 
+  @IsNotEmpty()
+  @IsString()
+  rpcEndpoint: string;
+
+  @IsNotEmpty()
+  @IsString()
+  contractAddress: string;
+
+  @IsNotEmpty()
+  @IsNumber()
+  beginningBlock: number;
+
   constructor() {
     this.port = Number(process.env.PORT);
     this.workerPort = Number(process.env.WORKER_PORT);
@@ -39,6 +51,9 @@ export class MainConfig {
     this.apiPrefix = process.env.API_PREFIX || 'api';
     this.workingDirectory = process.cwd();
     this.apiKeyLifetime = Number(process.env.API_KEY_LIFETIME);
+    this.rpcEndpoint = process.env.RPC_ENDPOINT;
+    this.contractAddress = process.env.CONTRACT_ADDRESS;
+    this.beginningBlock = Number(process.env.BEGINNING_BLOCK);
   }
 }
 

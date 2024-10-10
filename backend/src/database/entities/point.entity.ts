@@ -8,7 +8,7 @@ export class Point extends BaseTime {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ type: 'int', default: 0 })
+  @Column({ type: 'bigint', default: 0 })
   amount: number;
 
   @ManyToOne(() => User, (user) => user.points, { onDelete: 'CASCADE' })
