@@ -1,8 +1,8 @@
-import { type HTMLAttributes, useEffect, useRef, useState } from 'react';
+import { type HTMLAttributes, useCallback, useEffect, useRef, useState } from 'react';
+import { useAccount } from 'wagmi';
 
 import { sleep } from '@/lib/common';
 import { cn } from '@/lib/utils';
-import { useAccount } from 'wagmi';
 import { useIntersectionStore } from '@/stores';
 
 export interface ISpinWheelProps extends HTMLAttributes<HTMLCanvasElement> {
@@ -50,124 +50,45 @@ const SpinWheel: React.FC<ISpinWheelProps> = ({
   const angleCurrent = useRef<number>(0);
   const angleDelta = useRef<number>(0);
   const progress = useRef<number>(0);
+  const spinStart = useRef<number>(0);
+  const maxSpeed = useRef<number>(Math.PI / segmentTextArray.length);
+  const frames = useRef<number>(0);
+  const canvasContext = useRef<any>(null);
   const finished = useRef<boolean>(false);
   const currentSegment = useRef<string>('');
 
   const timerDelay = segmentTextArray.length;
-  let canvasContext: any = null;
-  let maxSpeed = Math.PI / segmentTextArray.length;
   const upTime = segmentTextArray.length * upDuration;
   const downTime = segmentTextArray.length * downDuration;
-  let spinStart = 0;
-  // eslint-disable-next-line unused-imports/no-unused-vars
-  let frames = 0;
   const centerX = size;
   const centerY = size;
 
-  useEffect(() => {
-    wheelInit();
-    setTimeout(() => {
-      window.scrollTo(0, 1);
-    }, 0);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const drawSegment = useCallback(
+    (key: number, lastAngle: number, angle: number) => {
+      const ctx = canvasContext.current;
+      const value = segmentTextArray[key];
+      ctx.save();
+      ctx.beginPath();
+      ctx.moveTo(centerX, centerY);
+      ctx.arc(centerX, centerY, size, lastAngle, angle, false);
+      ctx.lineTo(centerX, centerY);
+      ctx.closePath();
+      ctx.fillStyle = segColorArray[key];
+      ctx.fill();
+      ctx.stroke();
+      ctx.save();
+      ctx.translate(centerX, centerY);
+      ctx.rotate((lastAngle + angle) / 2);
+      ctx.fillStyle = contrastColor;
+      ctx.font = `bold 1.5em ${fontFamily}`;
+      ctx.fillText(value.substring(0, 21), size / 2 + 20, 0);
+      ctx.restore();
+    },
+    [centerX, centerY, contrastColor, fontFamily, segColorArray, segmentTextArray, size]
+  );
 
-  const wheelInit = () => {
-    initCanvas();
-    wheelDraw();
-  };
-
-  const initCanvas = () => {
-    let canvas: HTMLCanvasElement | null = document.getElementById('canvas') as HTMLCanvasElement;
-
-    if (!canvas) {
-      // Create a new canvas if it doesn't exist
-      canvas = document.createElement('canvas');
-      canvas.setAttribute('width', `${size * 2}`);
-      canvas.setAttribute('height', `${size * 2}`);
-      canvas.setAttribute('id', 'canvas');
-      document?.getElementById('wheel')?.appendChild(canvas);
-    }
-    canvasContext = canvas.getContext('2d');
-
-    canvas.style.borderRadius = '50%';
-
-    canvas?.addEventListener('click', spin, false);
-  };
-
-  const spin = () => {
-    if (!isConnected) {
-      setTargetInView('connectWallet');
-      return;
-    }
-
-    if (timerHandle.current === 0) {
-      spinStart = new Date().getTime();
-      maxSpeed = Math.PI / segmentTextArray.length;
-      frames = 0;
-      timerHandle.current = setInterval(onTimerTick, timerDelay * 5);
-    }
-  };
-
-  const onTimerTick = async () => {
-    frames++;
-    wheelDraw();
-    const duration = new Date().getTime() - spinStart;
-    progress.current = 0;
-    finished.current = false;
-
-    if (duration < upTime) {
-      await sleep(0);
-      progress.current = duration / upTime;
-      angleDelta.current = maxSpeed * Math.sin((progress.current * Math.PI) / 2);
-    } else {
-      await sleep(0);
-      progress.current = duration / downTime;
-      angleDelta.current = maxSpeed * Math.sin((progress.current * Math.PI) / 2 + Math.PI / 2);
-      if (progress.current >= 1) finished.current = true;
-    }
-    await sleep(0);
-
-    angleCurrent.current += angleDelta.current;
-    while (angleCurrent.current >= Math.PI * 2) angleCurrent.current -= Math.PI * 2;
-    if (finished.current) {
-      setFinished(true);
-      onFinished(currentSegment.current);
-      clearInterval(timerHandle.current);
-      timerHandle.current = 0;
-      angleDelta.current = 0;
-    }
-  };
-
-  const wheelDraw = () => {
-    clear();
-    drawWheel();
-    drawNeedle();
-  };
-
-  const drawSegment = (key: number, lastAngle: number, angle: number) => {
-    const ctx = canvasContext;
-    const value = segmentTextArray[key];
-    ctx.save();
-    ctx.beginPath();
-    ctx.moveTo(centerX, centerY);
-    ctx.arc(centerX, centerY, size, lastAngle, angle, false);
-    ctx.lineTo(centerX, centerY);
-    ctx.closePath();
-    ctx.fillStyle = segColorArray[key];
-    ctx.fill();
-    ctx.stroke();
-    ctx.save();
-    ctx.translate(centerX, centerY);
-    ctx.rotate((lastAngle + angle) / 2);
-    ctx.fillStyle = contrastColor;
-    ctx.font = `bold 1.5em ${fontFamily}`;
-    ctx.fillText(value.substring(0, 21), size / 2 + 20, 0);
-    ctx.restore();
-  };
-
-  const drawWheel = () => {
-    const ctx = canvasContext;
+  const drawWheel = useCallback(() => {
+    const ctx = canvasContext.current;
     let lastAngle = angleCurrent.current;
     const len = segmentTextArray.length;
     const PI2 = Math.PI * 2;
@@ -204,10 +125,20 @@ const SpinWheel: React.FC<ISpinWheelProps> = ({
     ctx.lineWidth = 4;
     ctx.strokeStyle = primaryColor;
     ctx.stroke();
-  };
+  }, [
+    buttonText,
+    centerX,
+    centerY,
+    contrastColor,
+    drawSegment,
+    fontFamily,
+    primaryColor,
+    segmentTextArray.length,
+    size,
+  ]);
 
-  const drawNeedle = () => {
-    const ctx = canvasContext;
+  const drawNeedle = useCallback(() => {
+    const ctx = canvasContext.current;
     ctx.lineWidth = 1;
     ctx.strokeStyle = contrastColor;
     ctx.fileStyle = contrastColor;
@@ -234,12 +165,92 @@ const SpinWheel: React.FC<ISpinWheelProps> = ({
     ctx.fillStyle = primaryColor;
     ctx.font = `bold 2em ${fontFamily}`;
     currentSegment.current = segmentTextArray[i];
-  };
+  }, [arrowLocation, centerX, centerY, contrastColor, fontFamily, primaryColor, segmentTextArray]);
 
-  const clear = () => {
-    const ctx = canvasContext;
+  const clear = useCallback(() => {
+    const ctx = canvasContext.current;
     ctx.clearRect(0, 0, size, size);
-  };
+  }, [size]);
+
+  const wheelDraw = useCallback(() => {
+    clear();
+    drawWheel();
+    drawNeedle();
+  }, [clear, drawNeedle, drawWheel]);
+
+  const onTimerTick = useCallback(async () => {
+    frames.current++;
+    wheelDraw();
+    const duration = new Date().getTime() - spinStart.current;
+    progress.current = 0;
+    finished.current = false;
+
+    if (duration < upTime) {
+      await sleep(0);
+      progress.current = duration / upTime;
+      angleDelta.current = maxSpeed.current * Math.sin((progress.current * Math.PI) / 2);
+    } else {
+      await sleep(0);
+      progress.current = duration / downTime;
+      angleDelta.current = maxSpeed.current * Math.sin((progress.current * Math.PI) / 2 + Math.PI / 2);
+      if (progress.current >= 1) finished.current = true;
+    }
+    await sleep(0);
+
+    angleCurrent.current += angleDelta.current;
+    while (angleCurrent.current >= Math.PI * 2) angleCurrent.current -= Math.PI * 2;
+    if (finished.current) {
+      setFinished(true);
+      onFinished(currentSegment.current);
+      clearInterval(timerHandle.current);
+      timerHandle.current = 0;
+      angleDelta.current = 0;
+    }
+  }, [downTime, onFinished, upTime, wheelDraw]);
+
+  const spin = useCallback(() => {
+    if (!isConnected) {
+      setTargetInView('connectWallet');
+      return;
+    }
+
+    if (timerHandle.current === 0) {
+      spinStart.current = new Date().getTime();
+      maxSpeed.current = Math.PI / segmentTextArray.length;
+      frames.current = 0;
+      timerHandle.current = setInterval(onTimerTick, timerDelay * 5);
+    }
+  }, [isConnected, onTimerTick, segmentTextArray.length, setTargetInView, timerDelay]);
+
+  const initCanvas = useCallback(() => {
+    let canvas: HTMLCanvasElement | null = document.getElementById('canvas') as HTMLCanvasElement;
+
+    if (!canvas) {
+      // Create a new canvas if it doesn't exist
+      canvas = document.createElement('canvas');
+      canvas.setAttribute('width', `${size * 2}`);
+      canvas.setAttribute('height', `${size * 2}`);
+      canvas.setAttribute('id', 'canvas');
+      document?.getElementById('wheel')?.appendChild(canvas);
+    }
+    canvasContext.current = canvas.getContext('2d');
+
+    canvas.style.borderRadius = '50%';
+
+    canvas?.addEventListener('click', spin, false);
+  }, [size, spin]);
+
+  const wheelInit = useCallback(() => {
+    initCanvas();
+    wheelDraw();
+  }, [initCanvas, wheelDraw]);
+
+  useEffect(() => {
+    wheelInit();
+    setTimeout(() => {
+      window.scrollTo(0, 1);
+    }, 0);
+  }, [wheelInit]);
 
   return (
     <div id="wheel" className="p-6">

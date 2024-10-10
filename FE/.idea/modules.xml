@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/vaporfund-fronend.iml" filepath="$PROJECT_DIR$/.idea/vaporfund-fronend.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/spin-to-earn.iml" filepath="$PROJECT_DIR$/.idea/spin-to-earn.iml" />
     </modules>
   </component>
 </project>

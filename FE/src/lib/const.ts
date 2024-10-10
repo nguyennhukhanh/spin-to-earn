@@ -1,5 +1,5 @@
 import { Icons } from '@/assets/icons';
-import { type ChainNetwork } from '@/types';
+import { type ChainNetwork, ROUTE } from '@/types';
 import { type Address } from '@/types/common.type';
 
 const isProduction = process.env.NODE_ENV === 'production';
@@ -15,11 +15,14 @@ export const env = {
   BSC_SCAN_URL: process.env.NEXT_PUBLIC_BSC_SCAN_URL ?? 'https://testnet.bscscan.com',
   SPIN_CONTRACT: (process.env.NEXT_PUBLIC_SPIN_CONTRACT ?? '0x') as Address,
   TOKEN_CONTRACT: (process.env.NEXT_PUBLIC_TOKEN_CONTRACT ?? '0x') as Address,
+  NUMBER_PRIZE: process.env.NEXT_PUBLIC_NUMBER_PRIZE ?? '15',
   signatureMessage,
 };
 
 export const isServer = typeof window === 'undefined';
 export const isUseTestnet = env.USE_TESTNET === 'true';
+
+export const requireLoginPathname: string[] = [ROUTE.CLAIM];
 
 const defaultNetworkChain: ChainNetwork[] = [
   {
